@@ -36,8 +36,8 @@ class BaseAdministrationTest(arrow.test.BaseTestCase):
         cls.admin_client.remove_server(fss_server)
 
     @classmethod
-    def create_customer(cls, customer_name, domain):
-        cls.admin_client.create_customer(customer_name, domain)
+    def create_customer(cls, customer_name, domain, admin_pass, retype_pass):
+        cls.admin_client.create_customer(customer_name, domain, admin_pass, retype_pass)
 
     @classmethod
     def remove_customer(cls, customer_name):

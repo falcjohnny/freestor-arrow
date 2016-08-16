@@ -54,7 +54,7 @@ class BaseAdminClientJSON(selenium_client.SeleniumClient):
         self.driver.find_element_by_name("passwd").clear()
         self.driver.find_element_by_name("passwd").send_keys(server_passwd)
         self.driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("Server added")
+        self.wait_for_return_message("The server has been added.")
   
     def remove_server(self, fss_server=None):
         #Remove server
@@ -65,11 +65,11 @@ class BaseAdminClientJSON(selenium_client.SeleniumClient):
         driver.find_element_by_link_text("Servers").click()
         driver.find_element_by_xpath(".//*[contains(text(), '"+ fss_server +"')]").click()
         driver.find_element_by_xpath("//button[@ng-click='deleteServer()']").click()
-        driver.find_element_by_xpath("//input[@type='checkbox']").click()
+        driver.find_element_by_xpath("//input[@ng-model='deleteItem.force']").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The server has been deleted.")
 
-    def create_customer(self, customer_name, domain):
+    def create_customer(self, customer_name, domain, admin_pass, retype_pass):
         self.driver.find_element_by_xpath("//li[5]/a/span").click()
         self.driver.find_element_by_link_text("Customers").click()
         #Create customer
@@ -78,6 +78,10 @@ class BaseAdminClientJSON(selenium_client.SeleniumClient):
         self.driver.find_element_by_xpath("(//input[@type='text'])[2]").send_keys(customer_name)
         self.driver.find_element_by_xpath("(//input[@type='text'])[3]").clear()
         self.driver.find_element_by_xpath("(//input[@type='text'])[3]").send_keys(domain)
+        self.driver.find_element_by_xpath("//input[@name='password']").clear()
+        self.driver.find_element_by_xpath("//input[@name='password']").send_keys(admin_pass)
+        self.driver.find_element_by_xpath("//input[@name='retypePassword']").clear()
+        self.driver.find_element_by_xpath("//input[@name='retypePassword']").send_keys(retype_pass)
         self.driver.find_element_by_xpath("//button[@type='submit']").click()
         for i in range(60):
             try:

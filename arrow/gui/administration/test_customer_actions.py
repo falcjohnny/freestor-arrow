@@ -24,6 +24,7 @@ class CustomerActionsTest(base.BaseAdministrationTest):
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.customer_name = "test"
         cls.domain = "test.com"
+        cls.admin_pass = "#abc=123abc=123"
 
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
@@ -31,7 +32,7 @@ class CustomerActionsTest(base.BaseAdministrationTest):
     def test_create_customer(self):
         #params = {self.name_field: vol_name,'volume_type': 'FSS'}
         #params = {}
-        self.create_customer(self.customer_name, self.domain)
+        self.create_customer(self.customer_name, self.domain, self.admin_pass, self.admin_pass)
         #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), '" + self.vdev_name + "')]"))
     def test_delete_customer(self):
         self.remove_customer(self.customer_name)
