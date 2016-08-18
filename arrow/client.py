@@ -11,6 +11,7 @@ from arrow.services.logicalresource.cache_client import CacheClientJSON
 from arrow.services.logicalresource.hotzone_client import HotzoneClientJSON
 from arrow.services.logicalresource.timemark_client import TimemarkClientJSON
 from arrow.services.physicalresource.pdev_client import PdevClientJSON
+from arrow.services.clientagents.cagent_client import CagentClientJSON
 from arrow import config
 from oslo_log import log as logging
 
@@ -38,3 +39,4 @@ class Manager(manager.Manager):
         self.cache_client = CacheClientJSON(self.admin_client.driver)
         self.hotzone_client = HotzoneClientJSON(self.admin_client.driver)
         self.pdev_client = PdevClientJSON(self.admin_client.driver)
+        self.cagent_client = CagentClientJSON(self.admin_client.driver)
