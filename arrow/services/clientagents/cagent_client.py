@@ -39,10 +39,9 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select Protocol
         driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
         driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
-#        driver.find_element_by_xpath("//a[contains(.,'" + protocol + "')]").click()
-        #driver.find_element_by_xpath("//select[@name='category']/option[text()='" + disk + "']").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been created.")
+        # Check if protected disk status show "Online"
         for i in range(30):
             try:
                 driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
@@ -59,10 +58,12 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
-        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        #driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Update policy
         driver.find_element_by_xpath("//button[contains(@ng-click,'updateProtection(gridOptions.selectedRows[0], gridProtectedOptions.selectedRows, true)')]").click()
         stype = None 
@@ -77,13 +78,8 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//select[@ng-model='protectionForm.type']").click()
         driver.find_element_by_xpath("//option[@label='" + kwargs['schedule_type'] + "']")
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        for i in range(60):
-            try:
-                if driver.find_element_by_xpath("//strong[contains(.,'The protection policy has been created.')]").is_displayed(): break
-            except: pass
-            time.sleep(1)
-        else: self.fail("time out")
- 
+        self.wait_for_return_message("The protection policy has been updated.")
+
     def remove_protected_disk(self, client=None, disk=None):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
@@ -94,7 +90,8 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
-        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+#        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Remove protection
         driver.find_element_by_xpath("(//button[@type='button'])[10]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()

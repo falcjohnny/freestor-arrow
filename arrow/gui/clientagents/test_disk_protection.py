@@ -23,7 +23,7 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         cls.cagent = cls.cagent_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
-        cls.client = "JOHNNY-WIN[admin_johnny_local]"
+        cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
         cls.disk = "disk0"
         cls.protocol = 'iSCSI'
         cls.params = {'interval_num': 2,'schedule_type': 'Days'}
@@ -33,15 +33,15 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
 
-    def test_protect_disk(self):
+    def test_01protect_disk(self):
         #params = {self.name_field: vol_name,'volume_type': 'FSS'}
         #params = {}
         self.cagent.protect_disk(self.client, self.disk, self.protocol)
     
-    """def test_update_protection_policy(self):
+    def test_02update_protection_policy(self):
         self.cagent.update_protection(self.client, self.disk, **self.params)
-    """
-    def test_remove_protected_disk(self):
+    
+    def test_03remove_protected_disk(self):
         self.cagent.remove_protected_disk(self.client, self.disk)
     
     @classmethod
