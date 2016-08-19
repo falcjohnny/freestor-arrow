@@ -41,6 +41,10 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
          cls.cagent_client.update_protection(client, disk, **kwargs)
 
     @classmethod
+    def suspend_resume_protection(cls, client=None, disk=None, action=None):
+         cls.cagent_client.suspend_resume_protection(client, disk, action)
+  
+    @classmethod
     def remove_protected_disk(cls, client=None, disk=None):
          cls.cagent_client.remove_protected_disk(client, disk)
     #@classmethod

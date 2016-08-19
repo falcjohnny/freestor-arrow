@@ -33,15 +33,26 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
 
-    def test_01protect_disk(self):
+    def test_01_protect_disk(self):
         #params = {self.name_field: vol_name,'volume_type': 'FSS'}
         #params = {}
         self.cagent.protect_disk(self.client, self.disk, self.protocol)
+        #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), '" + ? + "')]"))
     
-    def test_02update_protection_policy(self):
+    def test_02_update_protection_policy(self):
         self.cagent.update_protection(self.client, self.disk, **self.params)
+
+    def test_03_suspend_protection(self):
+        action = "suspend"
+        self.cagent.suspend_resume_protection(self.client, self.disk, action)
+        self.assertTrue(self.cagent.is_element_present(By.XPATH, ".//*[contains(text(), 'Protection suspended')]"))
     
-    def test_03remove_protected_disk(self):
+    def test_04_resume_protection(self):
+        action = "resume"
+        self.cagent.suspend_resume_protection(self.client, self.disk, action)        
+        #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), 'Protection suspended')]"))
+
+    def test_05_remove_protected_disk(self):
         self.cagent.remove_protected_disk(self.client, self.disk)
     
     @classmethod

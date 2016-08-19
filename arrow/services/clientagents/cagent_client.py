@@ -80,6 +80,31 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been updated.")
 
+    def suspend_resume_protection(self, client=None, disk=None, action=None):
+        driver = self.driver
+        driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+        #Select the Client
+        driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+        #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
+        #Select disk
+#        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
+        #Suspend sync
+        driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
+        if action == "suspend":
+           driver.find_element_by_xpath("//a[contains(.,'Suspend Synchronization')]").click()
+           driver.find_element_by_xpath("//button[@type='submit']").click()
+           self.wait_for_return_message("Synchronization has been suspended.")
+        else:
+           driver.find_element_by_xpath("//a[contains(.,'Resume Synchronization')]").click()
+           driver.find_element_by_xpath("//button[@type='submit']").click()
+           self.wait_for_return_message("Synchronization has been resumed.")
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(2)
+
     def remove_protected_disk(self, client=None, disk=None):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
