@@ -4,7 +4,7 @@
 # Version                               : 1.0
 
 import json
-import time
+import time, re
 
 from oslo_log import log as logging
 from six.moves.urllib import parse as urllib
@@ -28,6 +28,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
         #Select the Client
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)      
@@ -56,7 +57,7 @@ class CagentClientJSON(BaseAdminClientJSON):
                 if driver.find_element_by_xpath("//span[contains(.,'Online')]").is_displayed(): break
             except: pass
             time.sleep(1)
-        else: self.fail("time out")
+        else: assert False, "Time Out, the expected message didn't show up."
 
     def update_protection(self, client=None, disk=None, **kwargs):
         driver = self.driver
@@ -67,8 +68,8 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
-        #driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
-        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+#        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Update policy
         driver.find_element_by_xpath("//button[contains(@ng-click,'updateProtection(gridOptions.selectedRows[0], gridProtectedOptions.selectedRows, true)')]").click()
         stype = None 
@@ -85,7 +86,6 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").send_keys(kwargs['interval_num'])
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
-#        driver.find_element_by_xpath("//button[contains(@type,'submit')]").click()
         self.wait_for_return_message("The protection policy has been updated.")
 
     def suspend_resume_protection(self, client=None, disk=None, action=None):
@@ -96,10 +96,9 @@ class CagentClientJSON(BaseAdminClientJSON):
         time.sleep(1)
         #Select the Client
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
-        #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
-#        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
-        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+#        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Suspend sync
         driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
         if action == "suspend":
@@ -122,15 +121,24 @@ class CagentClientJSON(BaseAdminClientJSON):
         time.sleep(1)
         #Select the Client
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
-        #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
-#        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
         driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Remove protection
         driver.find_element_by_xpath("(//button[@type='button'])[10]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been deleted.")
-   
+        # Check if protected disk is removed
+        for i in range(30):
+            try:
+                driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+                time.sleep(1)
+                driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+                time.sleep(1)
+                if not re.search(r"^[\s\S]*//span\[contains\(\.,'Online'\)\][\s\S]*$", driver.find_element_by_css_selector("BODY").text): break
+            except: pass
+            time.sleep(1)
+        else: assert False, "Time Out, the expected message didn't show up."   
+
     def wait_for_return_message(self, message):
         for i in range(5):
             try:
