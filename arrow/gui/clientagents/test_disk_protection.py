@@ -24,9 +24,9 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
-        cls.disk = "disk0"
+        cls.disk = "Disk 0"
         cls.protocol = 'iSCSI'
-        cls.params = {'interval_num': 2,'schedule_type': 'Days'}
+        cls.params = {'interval_num': 2,'schedule_type': 'Hour(s)'}
         #cls.vdev_name = 'SANDisk-' + str(random.randrange(1, 1024))
         #cls.vdevs.append(cls.vdev_name)
 

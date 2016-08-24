@@ -9,6 +9,7 @@ import time
 from oslo_log import log as logging
 from six.moves.urllib import parse as urllib
 from arrow.services.administration.admin_client import BaseAdminClientJSON
+from selenium.webdriver.common.by import By
 #from arrow.services.logicalresource.vdev_client import BaseVdevClientJSON
 #from tempest import exceptions
 
@@ -22,7 +23,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #VdevClient_driver => self.vdev_client.driver in BaseVdevClientJSON
         self.driver = AdminClient_driver
 
-    def protect_disk(self, client=None, disk=None, protocol=None):
+    def protect_disk(self, client=None, disk=None, protocol=None, existed=None):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
@@ -35,10 +36,14 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select disk
         driver.find_element_by_xpath("//fieldset/div/div/div/div/span/span").click()
         driver.find_element_by_xpath("//span[contains(.,'" + disk + "')]").click()
-        #driver.find_element_by_xpath(".//*[contains(text(), '" + server + "')]").click()       
-        #Select Protocol
-        driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
-        driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
+        if existed is not None:
+            driver.find_element_by_xpath("//label[contains(.,'Use Existing')]").click()
+            driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
+            driver.find_element_by_xpath("//span[contains(.,'" + existed + "')]").click()
+        else:
+            #Select Protocol
+            driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
+            driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been created.")
         # Check if protected disk status show "Online"
@@ -67,17 +72,20 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Update policy
         driver.find_element_by_xpath("//button[contains(@ng-click,'updateProtection(gridOptions.selectedRows[0], gridProtectedOptions.selectedRows, true)')]").click()
         stype = None 
-        if kwargs['schedule_type'] == 'Days':
+        if kwargs['schedule_type'] == 'Day(s)':
             stype = 'day'
-        elif kwargs['schedule_type'] == 'Hour':
+        elif kwargs['schedule_type'] == 'Hour(s)':
             stype = 'typeHo'
         else:
             stype = 'typeMn' 
+        driver.find_element_by_xpath("//select[@ng-model='protectionForm.type']").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//option[@label='" + kwargs['schedule_type'] + "']").click()
         driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").clear()
         driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").send_keys(kwargs['interval_num'])
-        driver.find_element_by_xpath("//select[@ng-model='protectionForm.type']").click()
-        driver.find_element_by_xpath("//option[@label='" + kwargs['schedule_type'] + "']")
+        time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
+#        driver.find_element_by_xpath("//button[contains(@type,'submit')]").click()
         self.wait_for_return_message("The protection policy has been updated.")
 
     def suspend_resume_protection(self, client=None, disk=None, action=None):
@@ -102,6 +110,7 @@ class CagentClientJSON(BaseAdminClientJSON):
            driver.find_element_by_xpath("//a[contains(.,'Resume Synchronization')]").click()
            driver.find_element_by_xpath("//button[@type='submit']").click()
            self.wait_for_return_message("Synchronization has been resumed.")
+        time.sleep(1)
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
         time.sleep(2)
 
