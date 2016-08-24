@@ -122,7 +122,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select the Client
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #Select disk
-        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
+        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
         #Remove protection
         driver.find_element_by_xpath("(//button[@type='button'])[10]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
@@ -139,6 +139,50 @@ class CagentClientJSON(BaseAdminClientJSON):
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."   
 
+    def sync_mirror(self, client=None, disk=None):
+        driver = self.driver
+        driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+        #Select the Client
+        driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+        #Select disk
+        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        #Start Sync mirror
+        driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
+        driver.find_element_by_xpath("//a[contains(.,'Start Synchronization')]").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//button[@type='submit']").click()      
+        self.wait_for_return_message("Synchronization has been started.")
+        time.sleep(2)
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+
+    def take_snapshot(self, client=None, disk=None):
+        driver = self.driver
+        driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+        #Select the Client
+        driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+        #Select disk
+        driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
+        #Take snapshot
+        driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
+        driver.find_element_by_xpath("//a[contains(.,'Take Snapshot')]").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//button[@type='submit']").click()
+        self.wait_for_return_message("Snapshot has been taken.")
+        #Verify if the snapshot has been taken or not
+        """time.sleep(1)
+        driver.find_element_by_xpath("//span[contains(.,'Monitor')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Client View')]").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
+        assertTrue(self.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div/div"))
+        """
     def wait_for_return_message(self, message):
         for i in range(5):
             try:

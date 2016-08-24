@@ -33,8 +33,8 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
         super(BaseClientAgentsTest, cls).tearDownClass()
 
     @classmethod
-    def protect_disk(cls, client = None, disk=None, protocol=None):
-         cls.cagent_client.protect_disk(client, disk, protocol)
+    def protect_disk(cls, client = None, disk=None, protocol=None, existed=None):
+         cls.cagent_client.protect_disk(client, disk, protocol, existed)
     
     @classmethod
     def update_protection(cls, client=None, disk=None, **kwargs):
@@ -43,7 +43,15 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
     @classmethod
     def suspend_resume_protection(cls, client=None, disk=None, action=None):
          cls.cagent_client.suspend_resume_protection(client, disk, action)
+
+    @classmethod
+    def sync_mirror(cls, client=None, disk=None):
+         cls.cagent_client.sync_mirror(client, disk)
   
+    @classmethod
+    def take_snapshot(cls, client=None, disk=None):
+         cls.cagent_client.take_snapshot(client, disk)   
+    
     @classmethod
     def remove_protected_disk(cls, client=None, disk=None):
          cls.cagent_client.remove_protected_disk(client, disk)
