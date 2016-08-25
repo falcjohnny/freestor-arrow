@@ -109,6 +109,7 @@ class CagentClientJSON(BaseAdminClientJSON):
            driver.find_element_by_xpath("//a[contains(.,'Resume Synchronization')]").click()
            driver.find_element_by_xpath("//button[@type='submit']").click()
            self.wait_for_return_message("Synchronization has been resumed.")
+        
         time.sleep(1)
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
         time.sleep(2)
@@ -171,7 +172,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
         #Take snapshot
         driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
-        driver.find_element_by_xpath("//a[contains(.,'Take Snapshot')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Create TimeMark')]").click()
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("Snapshot has been taken.")

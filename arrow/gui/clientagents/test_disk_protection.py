@@ -7,6 +7,7 @@
 from oslo_log import log as logging
 from arrow.gui.clientagents import base
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from arrow import config
 from arrow import test
 import unittest
@@ -24,7 +25,7 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
-        cls.disk = "Disk 0"
+        cls.disk = "Disk 1"
         cls.protocol = 'iSCSI'
         cls.params = {'interval_num': 2,'schedule_type': 'Hour(s)'}
         #cls.vdev_name = 'SANDisk-' + str(random.randrange(1, 1024))
@@ -45,7 +46,7 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
     def test_03_suspend_protection(self):
         action = "suspend"
         self.cagent.suspend_resume_protection(self.client, self.disk, action)
-        self.assertTrue(self.cagent.is_element_present(By.XPATH, ".//*[contains(text(), 'Protection suspended')]"))
+        self.assertTrue(self.cagent.is_element_present(By.XPATH, ".//*[contains(text(), 'Synchronization suspended')]"))
     
     def test_04_resume_protection(self):
         action = "resume"

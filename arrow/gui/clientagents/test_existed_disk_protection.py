@@ -24,8 +24,8 @@ class ExistedDiskProtectionTest(base.BaseClientAgentsTest):
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
-        cls.disk = "Disk 0"
-        cls.exist_dsk = "Disk 1"
+        cls.disk = "Disk 1"
+        cls.exist_dsk = "Disk 2"
         cls.protocol = 'iSCSI'
         cls.params = {'interval_num': 2,'schedule_type': 'Days'}
         cls.cagent.protect_disk(cls.client, cls.disk, cls.protocol)
