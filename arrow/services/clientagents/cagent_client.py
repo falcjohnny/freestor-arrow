@@ -10,6 +10,7 @@ from oslo_log import log as logging
 from six.moves.urllib import parse as urllib
 from arrow.services.administration.admin_client import BaseAdminClientJSON
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 #from arrow.services.logicalresource.vdev_client import BaseVdevClientJSON
 #from tempest import exceptions
 
@@ -59,6 +60,24 @@ class CagentClientJSON(BaseAdminClientJSON):
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."
 
+    def protect_multi_disks(self, client=None, disk=None, protocol=None, existed=None, nums=None):
+        driver = self.driver
+        driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
+        driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
+        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//button[@ng-click='batchCreateProtection(gridOptions.rowData)']").click()
+        driver.find_element_by_xpath("//input[@ng-change='selectAllRows(selectAllChecked, batchGridOptions)']").click()
+        time.sleep(1)
+        #Select disk
+        driver.find_element_by_css_selector("span.ui-select-match-text.pull-left").click()
+        driver.find_element_by_xpath("//span[contains(.,'" + disk + "')]").click()
+        #Select protocol
+        driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
+        driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
+        driver.find_element_by_xpath("//button[@type='submit']").click()
+        self.wait_for_return_message("The protection policy for " + nums + " clients has been created..")
+
     def update_protection(self, client=None, disk=None, **kwargs):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
@@ -101,6 +120,7 @@ class CagentClientJSON(BaseAdminClientJSON):
 #        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Suspend sync
         driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
+        time.sleep(1)
         if action == "suspend":
            driver.find_element_by_xpath("//a[contains(.,'Suspend Synchronization')]").click()
            driver.find_element_by_xpath("//button[@type='submit']").click()
@@ -110,7 +130,7 @@ class CagentClientJSON(BaseAdminClientJSON):
            driver.find_element_by_xpath("//button[@type='submit']").click()
            self.wait_for_return_message("Synchronization has been resumed.")
         
-        time.sleep(1)
+        time.sleep(2)
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
         time.sleep(2)
 
@@ -175,15 +195,21 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//a[contains(.,'Create TimeMark')]").click()
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("Snapshot has been taken.")
-        #Verify if the snapshot has been taken or not
-        """time.sleep(1)
-        driver.find_element_by_xpath("//span[contains(.,'Monitor')]").click()
-        driver.find_element_by_xpath("//a[contains(.,'Client View')]").click()
-        time.sleep(1)
-        driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
-        assertTrue(self.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div/div"))
-        """
+        self.wait_for_return_message("The TimeMark has been created.")
+    
+    def wait_for_sync_finished(self, client):
+        # Check if protected disk activity show "Wait for next sync"
+        for i in range(30):
+            try:
+                self.driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+                time.sleep(1)
+                self.driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+                time.sleep(1)
+                if self.driver.find_element_by_xpath(".//*[contains(text(), 'Waiting for next sync')]").is_displayed(): break
+            except: pass
+            time.sleep(1)
+        else: assert False, "Time Out, the expected message didn't show up."
+
     def wait_for_return_message(self, message):
         for i in range(5):
             try:

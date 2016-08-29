@@ -29,7 +29,8 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         cls.params = {'interval_num': 2,'schedule_type': 'Days'}
         cls.cagent.protect_disk(cls.client, cls.disk, cls.protocol)
         # Check if protected disk activity show "Wait for next sync"
-        for i in range(30):
+        cls.cagent.wait_for_sync_finished(cls.client)
+        """for i in range(30):
             try:
                 cls.cagent.driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
                 time.sleep(1)
@@ -39,7 +40,7 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
             except: pass
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."
-        
+        """
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
 
@@ -49,25 +50,17 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), '" + ? + "')]"))
     
     def test_take_snapshot(self):
-        # Check if protected disk activity show "Wait for next sync"
-        for i in range(30):
-            try:
-                self.cagent.driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
-                time.sleep(1)
-                self.cagent.driver.find_element_by_xpath(".//*[contains(text(), '" + self.client + "')]").click()
-                time.sleep(1)
-                if self.cagent.driver.find_element_by_xpath(".//*[contains(text(), 'Wait for next sync')]").is_displayed(): break
-            except: pass
-            time.sleep(1)
-        else: assert False, "Time Out, the expected message didn't show up."
+        # Check if protected disk activity show "Wait for next sync" first.
+        self.cagent.wait_for_sync_finished(self.client)
         self.cagent.take_snapshot(self.client, self.disk)
         time.sleep(2)
         #Verify if the snapshot has been taken or not
         self.cagent.driver.find_element_by_xpath("//span[contains(.,'Monitor')]").click()
         self.cagent.driver.find_element_by_xpath("//a[contains(.,'Client View')]").click()
         time.sleep(1)
+        self.cagent.driver.find_element_by_xpath("//span[contains(.,'" + self.client + "')]").click()
         self.cagent.driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
-        self.assertTrue(self.cagent.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div/div"))
+        self.assertTrue(self.cagent.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div[2]/div"))
    
     @classmethod
     def tearDownClass(cls):

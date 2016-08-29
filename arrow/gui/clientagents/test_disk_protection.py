@@ -11,7 +11,7 @@ from selenium.common.exceptions import NoSuchElementException
 from arrow import config
 from arrow import test
 import unittest
-import random
+import random, time
 
 LOG = logging.getLogger("DiskProtectionTest")
 
@@ -38,7 +38,8 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         #params = {self.name_field: vol_name,'volume_type': 'FSS'}
         #params = {}
         self.cagent.protect_disk(self.client, self.disk, self.protocol)
-        #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), '" + ? + "')]"))
+        # Check if protected disk activity show "Wait for next sync"
+        self.cagent.wait_for_sync_finished(self.client)
     
     def test_02_update_protection_policy(self):
         self.cagent.update_protection(self.client, self.disk, **self.params)
@@ -46,6 +47,11 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
     def test_03_suspend_protection(self):
         action = "suspend"
         self.cagent.suspend_resume_protection(self.client, self.disk, action)
+        #Verify if the mirror disk is suspended 
+        self.cagent.driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+        time.sleep(1)
+        self.cagent.driver.find_element_by_xpath(".//*[contains(text(), '" + self.client + "')]").click()
+        time.sleep(1)
         self.assertTrue(self.cagent.is_element_present(By.XPATH, ".//*[contains(text(), 'Synchronization suspended')]"))
     
     def test_04_resume_protection(self):
