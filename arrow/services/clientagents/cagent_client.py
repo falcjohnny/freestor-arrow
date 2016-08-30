@@ -60,23 +60,25 @@ class CagentClientJSON(BaseAdminClientJSON):
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."
 
-    def protect_multi_disks(self, client=None, disk=None, protocol=None, existed=None, nums=None):
+    def protect_multi_disks(self, client=None, disk=None, protocol=None, nums=None):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
         time.sleep(1)
-        driver.find_element_by_xpath("//button[@ng-click='batchCreateProtection(gridOptions.rowData)']").click()
-        driver.find_element_by_xpath("//input[@ng-change='selectAllRows(selectAllChecked, batchGridOptions)']").click()
+        driver.find_element_by_xpath("//button[@data-template-url='views/client/create-protection-menu.tpl.html']").click()
+        driver.find_element_by_xpath("//a[contains(.,'Multiple Clients')]").click()
         time.sleep(1)
+        driver.find_element_by_xpath("//input[@ng-model='selectAllChecked']").click()
         #Select disk
         driver.find_element_by_css_selector("span.ui-select-match-text.pull-left").click()
+        time.sleep(1)
         driver.find_element_by_xpath("//span[contains(.,'" + disk + "')]").click()
         #Select protocol
         driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
         driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("The protection policy for " + nums + " clients has been created..")
+        self.wait_for_return_message("The protection policy for " + nums + " clients has been created.")
 
     def update_protection(self, client=None, disk=None, **kwargs):
         driver = self.driver

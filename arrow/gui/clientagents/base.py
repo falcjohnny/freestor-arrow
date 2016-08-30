@@ -37,8 +37,8 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
          cls.cagent_client.protect_disk(client, disk, protocol, existed)
 
     @classmethod
-    def protect_multiple_disks(cls, client = None, disk=None, protocol=None, existed=None, nums=None):
-         cls.cagent_client.protect_multi_disks(client, disk, protocol, existed, nums)
+    def protect_multiple_disks(cls, client = None, disk=None, protocol=None, nums=None):
+         cls.cagent_client.protect_multi_disks(client, disk, protocol, nums)
     
     @classmethod
     def update_protection(cls, client=None, disk=None, **kwargs):

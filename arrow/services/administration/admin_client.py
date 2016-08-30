@@ -59,6 +59,7 @@ class BaseAdminClientJSON(selenium_client.SeleniumClient):
     def remove_server(self, fss_server=None):
         #Remove server
         driver = self.driver
+        time.sleep(1)
         #You need to click Dashboard first, then you can click Administration without problem.
         driver.find_element_by_xpath("//span[contains(.,'Dashboard')]").click()
         driver.find_element_by_xpath("//span[contains(.,'Administration')]").click()

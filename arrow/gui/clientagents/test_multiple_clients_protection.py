@@ -26,7 +26,7 @@ class MultiClientsProtectionTest(base.BaseClientAgentsTest):
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
         cls.disk = "Disk 1"
-        cls.nums_client = 2
+        cls.nums_client = '2'
         cls.protocol = 'iSCSI'
         cls.params = {'interval_num': 2,'schedule_type': 'Hour(s)'}
         #cls.vdev_name = 'SANDisk-' + str(random.randrange(1, 1024))
