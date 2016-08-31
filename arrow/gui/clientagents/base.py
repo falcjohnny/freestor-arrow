@@ -33,8 +33,8 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
         super(BaseClientAgentsTest, cls).tearDownClass()
 
     @classmethod
-    def protect_disk(cls, client = None, disk=None, protocol=None, existed=None):
-         cls.cagent_client.protect_disk(client, disk, protocol, existed)
+    def protect_disk(cls, client = None, disk=None, protocol=None, existed=None, **kwargs):
+         cls.cagent_client.protect_disk(client, disk, protocol, existed, **kwargs)
 
     @classmethod
     def protect_multiple_disks(cls, client = None, disk=None, protocol=None, nums=None):

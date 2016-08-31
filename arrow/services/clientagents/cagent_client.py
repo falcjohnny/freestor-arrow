@@ -24,7 +24,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #VdevClient_driver => self.vdev_client.driver in BaseVdevClientJSON
         self.driver = AdminClient_driver
 
-    def protect_disk(self, client=None, disk=None, protocol=None, existed=None):
+    def protect_disk(self, client=None, disk=None, protocol=None, existed=None, **kwargs):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
@@ -34,7 +34,9 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)      
         #Create protection 
-        driver.find_element_by_xpath("//button[contains(@ng-click,'createProtection(gridOptions.selectedRows[0], false)')]").click()
+        driver.find_element_by_xpath("//button[@data-template-url='views/client/create-protection-menu.tpl.html']").click()
+        driver.find_element_by_xpath("//a[contains(.,'Single Client')]").click()
+        time.sleep(1)
         #Select disk
         driver.find_element_by_xpath("//fieldset/div/div/div/div/span/span").click()
         driver.find_element_by_xpath("//span[contains(.,'" + disk + "')]").click()
@@ -46,6 +48,26 @@ class CagentClientJSON(BaseAdminClientJSON):
             #Select Protocol
             driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
             driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
+        #set parameter
+        stype = None
+        if kwargs['schedule_type'] == 'Day(s)':
+            stype = 'day'
+        elif kwargs['schedule_type'] == 'Hour(s)':
+            stype = 'typeHo'
+        else:
+            stype = 'typeMn'
+        driver.find_element_by_xpath("//select[@ng-model='protectionForm.type']").click()
+        time.sleep(1)
+        driver.find_element_by_xpath("//option[@label='" + kwargs['schedule_type'] + "']").click()
+        driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").clear()
+        driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").send_keys(kwargs['interval_num'])
+        if kwargs['trigger_sync'] == False:
+            driver.find_element_by_xpath("//button[@class='btn btn-default btn-toggle blue ng-pristine ng-untouched ng-valid active']").click()
+        else:
+            driver.find_element_by_xpath("//select[@ng-model='sizeInput.unit']").click()
+            driver.find_element_by_xpath("//option[@label='"+ kwargs['watermark_unit'] +"']").click()
+            driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").clear()
+            driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").send_keys(kwargs['watermark_value'])
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been created.")
         # Check if protected disk status show "Online"
@@ -147,7 +169,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select disk
         driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
         #Remove protection
-        driver.find_element_by_xpath("(//button[@type='button'])[10]").click()
+        driver.find_element_by_xpath("(//button[@type='button'])[8]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been deleted.")
         # Check if protected disk is removed

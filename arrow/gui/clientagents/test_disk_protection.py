@@ -27,17 +27,13 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
         cls.disk = "Disk 1"
         cls.protocol = 'iSCSI'
-        cls.params = {'interval_num': 2,'schedule_type': 'Hour(s)'}
-        #cls.vdev_name = 'SANDisk-' + str(random.randrange(1, 1024))
-        #cls.vdevs.append(cls.vdev_name)
+        cls.params = {'interval_num': 2,'schedule_type': 'Hour(s)','trigger_sync': False, 'watermark_value': 1, 'watermark_unit': 'GB'}
 
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
 
     def test_01_protect_disk(self):
-        #params = {self.name_field: vol_name,'volume_type': 'FSS'}
-        #params = {}
-        self.cagent.protect_disk(self.client, self.disk, self.protocol)
+        self.cagent.protect_disk(self.client, self.disk, self.protocol, **self.params)
         # Check if protected disk activity show "Wait for next sync"
         self.cagent.wait_for_sync_finished(self.client)
     
