@@ -24,7 +24,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #VdevClient_driver => self.vdev_client.driver in BaseVdevClientJSON
         self.driver = AdminClient_driver
 
-    def protect_disk(self, client=None, disk=None, protocol=None, existed=None, **kwargs):
+    def protect_disk(self, client=None, disk=None, protocol=None, **kwargs):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         driver.find_element_by_xpath("//a[contains(.,'Client Agents')]").click()
@@ -40,7 +40,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select disk
         driver.find_element_by_xpath("//fieldset/div/div/div/div/span/span").click()
         driver.find_element_by_xpath("//span[contains(.,'" + disk + "')]").click()
-        if existed is not None:
+        if kwargs['existed'] is not None:
             driver.find_element_by_xpath("//label[contains(.,'Use Existing')]").click()
             driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
             driver.find_element_by_xpath("//span[contains(.,'" + existed + "')]").click()

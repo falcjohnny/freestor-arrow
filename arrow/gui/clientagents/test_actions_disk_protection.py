@@ -25,9 +25,10 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
         cls.disk = "Disk 1"
+        #cls.exist_dsk = ''
         cls.protocol = 'iSCSI'
-        cls.params = {'interval_num': 2,'schedule_type': 'Days'}
-        cls.cagent.protect_disk(cls.client, cls.disk, cls.protocol)
+        cls.params = {'existed':None, 'interval_num': 2,'schedule_type': 'Hour(s)','trigger_sync': False, 'watermark_value': 1, 'watermark_unit': 'GB'}
+        cls.protect_disk(cls.client, cls.disk, cls.protocol, **cls.params)
         # Check if protected disk activity show "Wait for next sync"
         cls.cagent.wait_for_sync_finished(cls.client)
         """for i in range(30):
@@ -60,6 +61,8 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         time.sleep(1)
         self.cagent.driver.find_element_by_xpath("//span[contains(.,'" + self.client + "')]").click()
         self.cagent.driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
+        self.cagent.driver.find_element_by_xpath("//button[@ng-click='loadSnapshot();']").click()
+        time.sleep(1)
         self.assertTrue(self.cagent.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div[2]/div"))
    
     @classmethod
