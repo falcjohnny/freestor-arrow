@@ -43,7 +43,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         if kwargs['existed'] is not None:
             driver.find_element_by_xpath("//label[contains(.,'Use Existing')]").click()
             driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
-            driver.find_element_by_xpath("//span[contains(.,'" + existed + "')]").click()
+            driver.find_element_by_xpath("//span[contains(.,'" + kwargs['existed'] + "')]").click()
         else:
             #Select Protocol
             driver.find_element_by_xpath("//span[@class='ui-select-placeholder text-muted ng-binding']").click()
@@ -101,6 +101,17 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//span[contains(.,'" + protocol + "')]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy for " + nums + " clients has been created.")
+        # Check if protected disk status show "Online"
+        for i in range(30):
+            try:
+                driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+                time.sleep(1)
+                driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+                time.sleep(1)
+                if driver.find_element_by_xpath("//span[contains(.,'Online')]").is_displayed(): break
+            except: pass
+            time.sleep(1)
+        else: assert False, "Time Out, the expected message didn't show up."
 
     def update_protection(self, client=None, disk=None, **kwargs):
         driver = self.driver

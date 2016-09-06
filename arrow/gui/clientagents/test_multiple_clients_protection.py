@@ -22,9 +22,11 @@ class MultiClientsProtectionTest(base.BaseClientAgentsTest):
         #cls.client = cls.vdev_client
         cls.admin = cls.admin_client
         cls.cagent = cls.cagent_client
+        cls.vdev = cls.vdev_client
+        cls.sanclient = cls.sanclient_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
-        cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
+        cls.client = ["JOHNNY-WIN2012[admin_johnny_local]","J-WIN2012-1[admin_johnny_local]"]
         cls.disk = "Disk 1"
         cls.nums_client = '2'
         cls.protocol = 'iSCSI'
@@ -38,7 +40,7 @@ class MultiClientsProtectionTest(base.BaseClientAgentsTest):
     def test_01_protect_windows_disks(self):
         #params = {self.name_field: vol_name,'volume_type': 'FSS'}
         #params = {}
-        self.protect_multiple_disks(self.client, self.disk, self.protocol, self.nums_client)
+        self.protect_multiple_disks(self.client[0], self.disk, self.protocol, self.nums_client)
         #self.assertTrue(self.client.is_element_present(By.XPATH, ".//*[contains(text(), '" + ? + "')]"))
     
  #   def test_05_remove_protected_disk(self):
@@ -46,6 +48,12 @@ class MultiClientsProtectionTest(base.BaseClientAgentsTest):
     
     @classmethod
     def tearDownClass(cls):
+        cls.remove_protected_disk(cls.client[0], cls.disk)
+        cls.remove_protected_disk(cls.client[1], cls.disk)
+        cls.sanclient_client.unassign_all_from_sanclient(cls.client[0])
+        cls.sanclient_client.unassign_all_from_sanclient(cls.client[1])
+        force = True
+        cls.vdev_client.delete_all_vdevs(force)
         super(MultiClientsProtectionTest, cls).tearDownClass()
         #self.assertEqual([], self.verificationErrors)
 

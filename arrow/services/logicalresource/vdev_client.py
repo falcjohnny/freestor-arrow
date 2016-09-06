@@ -86,22 +86,45 @@ class BaseVdevClientJSON(BaseAdminClientJSON):
     def delete_all_vdevs(self, force=False): 
         """Clear All Virtual Devices ."""
         driver = self.driver
+        time.sleep(2)
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         time.sleep(1)
+        driver.find_element_by_xpath("//a[contains(.,'Virtual Devices')]").click()
         driver.find_element_by_xpath("//input[@ng-model='selectAll']").click()
         driver.find_element_by_xpath("//button[@data-template-url='views/manage/delete-device.tpl.html']").click()
-        driver.find_element_by_xpath("//a[contains(.,'Delete Virtual Devices')]").click()
-        for i in range(60):
-            try:
-                if driver.find_element_by_xpath("//h5[contains(.,'Delete Multiple Virtual Devices')]").is_displayed(): break
-            except: pass
+        #Count the number of virtual devices
+        row_count = len(driver.find_elements_by_xpath("//div[@id='center']/div/div[2]/div/div/div/div[2]"))
+        row_count = row_count - 1 # The correct num# of vdevs
+        #If there are more than one vdevs existed.
+        if row_count > 1:
+            driver.find_element_by_xpath("//a[contains(.,'Delete Virtual Devices')]").click()
+            for i in range(60):
+                try:
+                    if driver.find_element_by_xpath("//h5[contains(.,'Delete Multiple Virtual Devices')]").is_displayed(): break
+                except: pass
+                time.sleep(1)
+            else: self.fail("time out")
+            if force is True:
+                driver.find_element_by_xpath("//button[@ng-model='deleteMultiple.force']").click()
+            driver.find_element_by_xpath("//button[contains(@ng-click,'deleteMultipleDevices(gridMultipleDevice,$hide)')]").click()
             time.sleep(1)
-        else: self.fail("time out")
-        if force is True:
-            driver.find_element_by_xpath("//button[@ng-model='deleteMultiple.force']").click()
-        driver.find_element_by_xpath("//button[contains(@ng-click,'deleteMultipleDevices(gridMultipleDevice,$hide)')]").click()
-        time.sleep(1)
-        driver.find_element_by_xpath("//button[contains(@ng-click,'yesDeleteMultipleDevices(gridMultipleDevice,$hide)')]").click()
+            driver.find_element_by_xpath("//button[contains(@ng-click,'yesDeleteMultipleDevices(gridMultipleDevice,$hide)')]").click()
+            self.wait_for_return_message("Devices have been deleted.")
+        #If there is only one vdev existed.
+        elif row_count is 1:
+            driver.find_element_by_xpath("//a[contains(.,'Delete')]").click()
+            for i in range(60):
+                try:
+                    if driver.find_element_by_xpath("//h5[contains(.,'Delete Virtual Device')]").is_displayed(): break
+                except: pass
+                time.sleep(1)
+            else: self.fail("time out")
+            if force is True:
+                driver.find_element_by_xpath("//button[@ng-model='deleteItem.force']").click()
+            driver.find_element_by_xpath("//button[contains(.,'Delete')]").click()
+            self.wait_for_return_message("The virtual device has been deleted.")
+        else:
+            pass
 
     def wait_for_return_message(self, message):
         for i in range(5):

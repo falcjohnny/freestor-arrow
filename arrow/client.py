@@ -10,6 +10,7 @@ from arrow.services.logicalresource.mirror_client import MirrorClientJSON
 from arrow.services.logicalresource.cache_client import CacheClientJSON
 from arrow.services.logicalresource.hotzone_client import HotzoneClientJSON
 from arrow.services.logicalresource.timemark_client import TimemarkClientJSON
+from arrow.services.logicalresource.sanclient_client import SANClientClientJSON
 from arrow.services.physicalresource.pdev_client import PdevClientJSON
 from arrow.services.clientagents.cagent_client import CagentClientJSON
 from arrow import config
@@ -40,3 +41,4 @@ class Manager(manager.Manager):
         self.hotzone_client = HotzoneClientJSON(self.admin_client.driver)
         self.pdev_client = PdevClientJSON(self.admin_client.driver)
         self.cagent_client = CagentClientJSON(self.admin_client.driver)
+        self.sanclient_client = SANClientClientJSON(self.admin_client.driver)

@@ -21,6 +21,8 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         #cls.client = cls.vdev_client
         cls.admin = cls.admin_client
         cls.cagent = cls.cagent_client
+        cls.vdev = cls.vdev_client
+        cls.sanclient = cls.sanclient_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
         cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
@@ -61,12 +63,17 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         time.sleep(1)
         self.cagent.driver.find_element_by_xpath("//span[contains(.,'" + self.client + "')]").click()
         self.cagent.driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
+        time.sleep(1)
         self.cagent.driver.find_element_by_xpath("//button[@ng-click='loadSnapshot();']").click()
         time.sleep(1)
         self.assertTrue(self.cagent.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div[2]/div"))
    
     @classmethod
     def tearDownClass(cls):
+        cls.remove_protected_disk(cls.client, cls.disk)
+        cls.sanclient_client.unassign_all_from_sanclient(cls.client)
+        force = True
+        cls.vdev_client.delete_all_vdevs(force)
         super(ActionsDiskProtectionTest, cls).tearDownClass()
 
 if __name__ == "__main__":

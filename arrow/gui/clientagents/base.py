@@ -22,6 +22,7 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
         cls.admin_client = cls.os.admin_client
         cls.vdev_client = cls.os.vdev_client
         cls.cagent_client = cls.os.cagent_client
+        cls.sanclient_client = cls.os.sanclient_client
         #os = manager; when you setup credentials and setup client manger, then you can control vdev_client service
 
     @classmethod
@@ -33,8 +34,10 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
         super(BaseClientAgentsTest, cls).tearDownClass()
 
     @classmethod
-    def protect_disk(cls, client = None, disk=None, protocol=None, existed=None, **kwargs):
-         cls.cagent_client.protect_disk(client, disk, protocol, existed, **kwargs)
+    def protect_disk(cls, client=None, disk=None, protocol=None, **kwargs):
+         #if not kwargs['existed']: 
+         #   kwargs['existed'] = None
+         cls.cagent_client.protect_disk(client, disk, protocol, **kwargs)
 
     @classmethod
     def protect_multiple_disks(cls, client = None, disk=None, protocol=None, nums=None):

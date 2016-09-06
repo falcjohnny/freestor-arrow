@@ -26,6 +26,7 @@ class BaseLogicalResourceTest(arrow.test.BaseTestCase):
         cls.cache_client = cls.os.cache_client
         cls.hotzone_client = cls.os.hotzone_client
         cls.timemark_client = cls.os.timemark_client
+        cls.sanclient_client = cls.os.sanclient_client
 
     @classmethod
     def tearDownClass(cls):
@@ -86,7 +87,10 @@ class BaseLogicalResourceTest(arrow.test.BaseTestCase):
                 cls.vdev_client.delete_vdev(vdev)
             except Exception:
                 pass
-
+   
+    @classmethod
+    def unassign_all_from_sanclient(cls, client=None):
+         cls.sanclient_client.unassign_all_from_sanclient(client)
         #for volume in cls.volumes:
         #    try:
         #        cls.volumes_client.wait_for_resource_deletion(volume['id'])
