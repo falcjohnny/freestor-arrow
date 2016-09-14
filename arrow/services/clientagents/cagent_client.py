@@ -180,7 +180,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Select disk
         driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
         #Remove protection
-        driver.find_element_by_xpath("(//button[@type='button'])[8]").click()
+        driver.find_element_by_xpath("(//button[@type='button'])[9]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The protection policy has been deleted.")
         # Check if protected disk is removed
