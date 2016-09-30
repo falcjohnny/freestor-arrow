@@ -24,7 +24,7 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
         cls.cagent = cls.cagent_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
-        cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
+        cls.client = "JOHNNY-WIN2012"
         cls.disk = "Disk 1"
         cls.protocol = 'iSCSI'
         cls.params = {'existed':None, 'interval_num': 2,'schedule_type': 'Hour(s)','trigger_sync': False, 'watermark_value': 1, 'watermark_unit': 'GB'}
@@ -60,8 +60,11 @@ class DiskProtectionTest(base.BaseClientAgentsTest):
     
     @classmethod
     def tearDownClass(cls):
+        cls.remove_protected_disk(cls.client, cls.disk)
+        cls.sanclient_client.unassign_all_from_sanclient(cls.client)
+        force = True
+        cls.vdev_client.delete_vdev(cls.client, force)
         super(DiskProtectionTest, cls).tearDownClass()
-        #self.assertEqual([], self.verificationErrors)
 
 if __name__ == "__main__":
     unittest.main()
