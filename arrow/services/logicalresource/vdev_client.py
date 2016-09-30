@@ -69,6 +69,7 @@ class BaseVdevClientJSON(BaseAdminClientJSON):
         driver = self.driver
         driver.find_element_by_xpath("//span[contains(.,'Manage')]").click()
         time.sleep(2)
+        driver.find_element_by_xpath("//a[contains(.,'Virtual Devices')]").click()
         #Find the element with text is vdev name. This method is very useful.
         driver.find_element_by_xpath(".//*[contains(text(), '" + vdev_name + "')]").click()
         driver.find_element_by_xpath("//button[contains(@data-template-url,'views/manage/delete-device.tpl.html')]").click()

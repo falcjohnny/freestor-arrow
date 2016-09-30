@@ -69,7 +69,7 @@ class CagentClientJSON(BaseAdminClientJSON):
             driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").clear()
             driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").send_keys(kwargs['watermark_value'])
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("The protection policy has been created.")
+        self.wait_for_return_message("The request to create a protection policy has been submitted. Check back later.")
         # Check if protected disk status show "Online"
         for i in range(30):
             try:
@@ -140,7 +140,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").send_keys(kwargs['interval_num'])
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("The protection policy has been updated.")
+        self.wait_for_return_message("The request to update the protection policy has been submitted. Check back later.")
 
     def suspend_resume_protection(self, client=None, disk=None, action=None):
         driver = self.driver
@@ -159,11 +159,11 @@ class CagentClientJSON(BaseAdminClientJSON):
         if action == "suspend":
            driver.find_element_by_xpath("//a[contains(.,'Suspend Synchronization')]").click()
            driver.find_element_by_xpath("//button[@type='submit']").click()
-           self.wait_for_return_message("Synchronization has been suspended.")
+           self.wait_for_return_message("The request to suspend synchronization has been submitted.")
         else:
            driver.find_element_by_xpath("//a[contains(.,'Resume Synchronization')]").click()
            driver.find_element_by_xpath("//button[@type='submit']").click()
-           self.wait_for_return_message("Synchronization has been resumed.")
+           self.wait_for_return_message("The request to resume synchronization has been submitted.")
         
         time.sleep(2)
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
@@ -182,7 +182,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Remove protection
         driver.find_element_by_xpath("(//button[@type='button'])[9]").click()
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("The protection policy has been deleted.")
+        self.wait_for_return_message("The request to delete the protection policy has been submitted.")
         # Check if protected disk is removed
         for i in range(30):
             try:
@@ -210,7 +210,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//a[contains(.,'Start Synchronization')]").click()
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()      
-        self.wait_for_return_message("Synchronization has been started.")
+        self.wait_for_return_message("The request to start synchronization has been submitted.")
         time.sleep(2)
         driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
         time.sleep(1)
@@ -230,7 +230,7 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//a[contains(.,'Create TimeMark')]").click()
         time.sleep(1)
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        self.wait_for_return_message("The TimeMark has been created.")
+        self.wait_for_return_message("The request to create a TimeMark has been submitted")
     
     def wait_for_sync_finished(self, client):
         # Check if protected disk activity show "Wait for next sync"

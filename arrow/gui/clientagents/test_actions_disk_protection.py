@@ -25,7 +25,7 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         cls.sanclient = cls.sanclient_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
-        cls.client = "JOHNNY-WIN2012[admin_johnny_local]"
+        cls.client = "JOHNNY-WIN2012"
         cls.disk = "Disk 1"
         #cls.exist_dsk = ''
         cls.protocol = 'iSCSI'
@@ -73,7 +73,7 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         cls.remove_protected_disk(cls.client, cls.disk)
         cls.sanclient_client.unassign_all_from_sanclient(cls.client)
         force = True
-        cls.vdev_client.delete_all_vdevs(force)
+        cls.vdev_client.delete_vdev(cls.client, force)
         super(ActionsDiskProtectionTest, cls).tearDownClass()
 
 if __name__ == "__main__":
