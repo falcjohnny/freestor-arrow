@@ -7,6 +7,7 @@
 from oslo_log import log as logging
 from arrow.gui.clientagents import base
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from arrow import config
 from arrow import test
 import unittest, time
@@ -63,8 +64,9 @@ class ActionsDiskProtectionTest(base.BaseClientAgentsTest):
         time.sleep(1)
         self.cagent.driver.find_element_by_xpath("//span[contains(.,'" + self.client + "')]").click()
         self.cagent.driver.find_element_by_xpath("//a[contains(.,'TimeMarks')]").click()
-        time.sleep(1)
-        self.cagent.driver.find_element_by_xpath("//button[@ng-click='loadSnapshot();']").click()
+        element = self.cagent.wait.until(EC.element_to_be_clickable((By.XPATH,"//button[contains(@ng-click,'loadSnapshot();')]")))
+        #time.sleep(5)
+        self.cagent.driver.find_element_by_xpath("//button[contains(@ng-click,'loadSnapshot();')]").click()
         time.sleep(1)
         self.assertTrue(self.cagent.is_element_present(By.XPATH, "//div[@id='center']/div/div[2]/div[2]/div/div/div[2]/div"))
    

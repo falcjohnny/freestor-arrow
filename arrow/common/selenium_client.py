@@ -8,6 +8,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 
@@ -23,4 +24,5 @@ class SeleniumClient:
         self.verificationErrors = []
         self.accept_next_alert = True
         self.credential_provider = credential_provider
+        self.wait = WebDriverWait(self.driver, 5)
 

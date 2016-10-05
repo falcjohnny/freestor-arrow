@@ -11,6 +11,7 @@ from six.moves.urllib import parse as urllib
 from arrow.services.administration.admin_client import BaseAdminClientJSON
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
 #from arrow.services.logicalresource.vdev_client import BaseVdevClientJSON
 #from tempest import exceptions
 
@@ -22,7 +23,8 @@ class CagentClientJSON(BaseAdminClientJSON):
     """
     def __init__(self, AdminClient_driver):
         #VdevClient_driver => self.vdev_client.driver in BaseVdevClientJSON
-        self.driver = AdminClient_driver
+        self.driver = AdminClient_driver.driver
+        self.wait = AdminClient_driver.wait
 
     def protect_disk(self, client=None, disk=None, protocol=None, **kwargs):
         driver = self.driver
@@ -228,7 +230,8 @@ class CagentClientJSON(BaseAdminClientJSON):
         #Take snapshot
         driver.find_element_by_xpath("//button[@data-template-url='views/client-agent/protection-menu.tpl.html']").click()
         driver.find_element_by_xpath("//a[contains(.,'Create TimeMark')]").click()
-        time.sleep(1)
+        #Check if the refresh button is clickable first
+        element = self.wait.until(EC.element_to_be_clickable((By.XPATH,"//button[@type='submit']")))
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The request to create a TimeMark has been submitted")
     

@@ -32,7 +32,7 @@ class Manager(manager.Manager):
     def _set_admin_clients(self):
         self.admin_client = BaseAdminClientJSON(
             self.selenium_provider,self.credential_provider,self.fss_provider)
-        #Parse the 'driver' attribute of admin_client to other clients you need
+        #Parse the 'driver' attribute of admin_client to all other clients you need, so your clients can use selenium driver.
         self.vdev_client = BaseVdevClientJSON(self.admin_client.driver,default_vdev_size=CONF.vdev.vdev_size) 
         self.snapshot_client = SnapshotClientJSON(self.admin_client.driver)
         self.mirror_client = MirrorClientJSON(self.admin_client.driver)
@@ -40,5 +40,6 @@ class Manager(manager.Manager):
         self.cache_client = CacheClientJSON(self.admin_client.driver)
         self.hotzone_client = HotzoneClientJSON(self.admin_client.driver)
         self.pdev_client = PdevClientJSON(self.admin_client.driver)
-        self.cagent_client = CagentClientJSON(self.admin_client.driver)
+        #pass through the object class "admin_client" directory
+        self.cagent_client = CagentClientJSON(self.admin_client)
         self.sanclient_client = SANClientClientJSON(self.admin_client.driver)
