@@ -40,6 +40,6 @@ class Manager(manager.Manager):
         self.cache_client = CacheClientJSON(self.admin_client.driver)
         self.hotzone_client = HotzoneClientJSON(self.admin_client.driver)
         self.pdev_client = PdevClientJSON(self.admin_client.driver)
-        #pass through the object class "admin_client" directory
+        #pass through the object class "admin_client" directly instead of "admin_client.driver".
         self.cagent_client = CagentClientJSON(self.admin_client)
         self.sanclient_client = SANClientClientJSON(self.admin_client.driver)
