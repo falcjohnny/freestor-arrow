@@ -72,14 +72,15 @@ class CagentClientJSON(BaseAdminClientJSON):
             driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").send_keys(kwargs['watermark_value'])
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The request to create a protection policy has been submitted. Check back later.")
-        # Check if protected disk status show "Online"
+        # Check if protected disk is showed on list
         for i in range(30):
             try:
                 driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
                 time.sleep(1)
                 driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
                 time.sleep(1)
-                if driver.find_element_by_xpath("//span[contains(.,'Online')]").is_displayed(): break
+                #if driver.find_element_by_xpath("//span[contains(.,'Online')]").is_displayed(): break
+                if driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").is_displayed(): break
             except: pass
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."
@@ -192,7 +193,7 @@ class CagentClientJSON(BaseAdminClientJSON):
                 time.sleep(1)
                 driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
                 time.sleep(1)
-                if not re.search(r"^[\s\S]*//span\[contains\(\.,'Online'\)\][\s\S]*$", driver.find_element_by_css_selector("BODY").text): break
+                if not re.search(r"^[\s\S]*//span\[contains\(\.,'" + disk + "'\)\][\s\S]*$", driver.find_element_by_css_selector("BODY").text): break
             except: pass
             time.sleep(1)
         else: assert False, "Time Out, the expected message didn't show up."   

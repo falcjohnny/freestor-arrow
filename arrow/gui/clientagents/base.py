@@ -40,6 +40,19 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
          cls.cagent_client.protect_disk(client, disk, protocol, **kwargs)
 
     @classmethod
+    def protect_single_client_disks(cls, client=None, numdisk=None, protocol=None, **kwargs):
+         if kwargs['client_os'] == 'windows':
+            for i in range(0,numdisk):
+                disk = 'Disk ' + str(i)
+                cls.cagent_client.protect_disk(client, disk, protocol, **kwargs)
+         elif kwargs['client_os'] == 'linux':
+            for i in range(97,97 + numdisk): #97=char "a"
+                disk = '/dev/sd' + chr(i)
+                cls.cagent_client.protect_disk(client, disk, protocol, **kwargs)
+         else:
+            pass
+
+    @classmethod
     def protect_multiple_disks(cls, client = None, disk=None, protocol=None, nums=None):
          cls.cagent_client.protect_multi_disks(client, disk, protocol, nums)
     
@@ -62,6 +75,19 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
     @classmethod
     def remove_protected_disk(cls, client=None, disk=None):
          cls.cagent_client.remove_protected_disk(client, disk)
+
+    @classmethod
+    def remove_single_client_disks(cls, client=None, numdisk=None, **kwargs):
+         if kwargs['client_os'] == 'windows':
+            for i in range(0,numdisk):
+                disk = 'Disk ' + str(i)
+                cls.cagent_client.remove_protected_disk(client, disk)
+         elif kwargs['client_os'] == 'linux':
+            for i in range(97,97 + numdisk): #97=char "a"
+                disk = '/dev/sd' + chr(i)
+                cls.cagent_client.remove_protected_disk(client, disk)
+         else:
+            pass
     #@classmethod
     #def clear_vdevs(cls):
     #    for vdev in cls.vdevs:
