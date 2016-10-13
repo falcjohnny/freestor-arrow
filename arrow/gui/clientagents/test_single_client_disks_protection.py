@@ -24,11 +24,11 @@ class SingleClientDisksProtectionTest(base.BaseClientAgentsTest):
         cls.cagent = cls.cagent_client
         cls.admin.login_server()
         cls.admin.add_server(cls.os.fss_provider[0], cls.os.fss_provider[1], cls.os.fss_provider[2])
-        cls.client = "JOHNNY-WIN2012"
-        cls.numdisk = 2
+        cls.client = "RH15-123" #"JOHNNY-WIN2012"
+        cls.numdisk = 3
         cls.protocol = 'iSCSI'
-        cls.params = {'client_os': 'windows','existed':None, 'interval_num': 2,'schedule_type': 'Hour(s)','trigger_sync': False, 'watermark_value': 1, 'watermark_unit': 'GB'}
-
+        cls.params = {'client_os': 'linux','existed':None, 'interval_num': 2,'schedule_type': 'Hour(s)','trigger_sync': None, 'watermark_value': 1, 'watermark_unit': 'GB'}
+        # Note: "trigger_sync" has False,True and None; None for Linux client protection has no "trigger_sync" option 
     def setUp(self):
         LOG.info('===Start running test "%s".===', self._testMethodName)
 

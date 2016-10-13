@@ -65,11 +65,13 @@ class CagentClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//input[@ng-model='protectionForm." + stype + "']").send_keys(kwargs['interval_num'])
         if kwargs['trigger_sync'] == False:
             driver.find_element_by_xpath("//button[@class='btn btn-default btn-toggle blue ng-pristine ng-untouched ng-valid active']").click()
-        else:
+        elif kwargs['trigger_sync'] == True:
             driver.find_element_by_xpath("//select[@ng-model='sizeInput.unit']").click()
             driver.find_element_by_xpath("//option[@label='"+ kwargs['watermark_unit'] +"']").click()
             driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").clear()
             driver.find_element_by_xpath("//input[@ng-model='sizeInput.value']").send_keys(kwargs['watermark_value'])
+        else:
+            pass
         driver.find_element_by_xpath("//button[@type='submit']").click()
         self.wait_for_return_message("The request to create a protection policy has been submitted. Check back later.")
         # Check if protected disk is showed on list
@@ -126,7 +128,6 @@ class CagentClientJSON(BaseAdminClientJSON):
         #LOG.info('===The Actual_Category is "%s".===', Actual_Category)       
         #Select disk
         driver.find_element_by_xpath(".//*[contains(text(), '" + disk + "')]").click()
-#        driver.find_element_by_xpath(".//*[contains(text(), 'Disk 0')]").click()
         #Update policy
         driver.find_element_by_xpath("//button[contains(@ng-click,'updateProtection(gridOptions.selectedRows[0], gridProtectedOptions.selectedRows, true)')]").click()
         stype = None 

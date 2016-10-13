@@ -20,9 +20,9 @@ class SANClientClientJSON(BaseAdminClientJSON):
     """
     def __init__(self, AdminClient_driver):
         #AdminClient_driver => self.admin_client.driver in BaseAdminClientJSON
-        self.driver = AdminClient_driver
-        #self.default_sanclient_size = default_sanclient_size
-    
+        self.driver = AdminClient_driver.driver
+        self.wait = AdminClient_driver.wait
+
     def unassign_all_from_sanclient(self, sanclient_name):
         """Unassign the Specified Virtual Device from sanclient name."""
         driver = self.driver
@@ -32,10 +32,14 @@ class SANClientClientJSON(BaseAdminClientJSON):
         driver.find_element_by_xpath("//a[contains(.,'Clients')]").click()
         #Find the element with text is sanclient name. This method is very useful.
         driver.find_element_by_xpath(".//*[contains(text(), '" + sanclient_name + "')]").click()
-        driver.find_element_by_xpath("//button[@ng-click='showUnassignDialog(currentDevice, gridResOptions.selectedRows[0])']").click()
-        driver.find_element_by_xpath("//input[@ng-model='selectAllChecked']").click()
-        driver.find_element_by_xpath("//button[contains(.,'Unassign')]").click()
-        self.wait_for_return_message("The device has been unassigned from the client.")
+        #Check if the unassign button is enabled or not
+        if  driver.find_element_by_xpath("//button[@ng-click='showUnassignDialog(currentDevice, gridResOptions.selectedRows[0])']").is_enabled():
+            driver.find_element_by_xpath("//button[@ng-click='showUnassignDialog(currentDevice, gridResOptions.selectedRows[0])']").click()
+            driver.find_element_by_xpath("//input[@ng-model='selectAllChecked']").click()
+            driver.find_element_by_xpath("//button[contains(.,'Unassign')]").click()
+            self.wait_for_return_message("The device has been unassigned from the client.")
+        else:
+            return
 
     def wait_for_return_message(self, message):
         for i in range(5):

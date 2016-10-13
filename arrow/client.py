@@ -42,4 +42,4 @@ class Manager(manager.Manager):
         self.pdev_client = PdevClientJSON(self.admin_client.driver)
         #pass through the object class "admin_client" directly instead of "admin_client.driver".
         self.cagent_client = CagentClientJSON(self.admin_client)
-        self.sanclient_client = SANClientClientJSON(self.admin_client.driver)
+        self.sanclient_client = SANClientClientJSON(self.admin_client)
