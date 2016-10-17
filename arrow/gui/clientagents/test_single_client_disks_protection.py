@@ -39,7 +39,7 @@ class SingleClientDisksProtectionTest(base.BaseClientAgentsTest):
     
     @classmethod
     def tearDownClass(cls):
-        cls.remove_single_client_disks(cls.client, cls.numdisk, **cls.params)
+        cls.remove_all_single_client_disks(cls.client, cls.numdisk, **cls.params)
         cls.sanclient_client.unassign_all_from_sanclient(cls.client)
         force = True
         cls.vdev_client.delete_all_vdevs( force)

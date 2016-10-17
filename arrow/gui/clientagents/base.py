@@ -88,6 +88,39 @@ class BaseClientAgentsTest(arrow.test.BaseTestCase):
                 cls.cagent_client.remove_protected_disk(client, disk)
          else:
             pass
+    
+    @classmethod
+    def remove_all_single_client_disks(cls, client=None, numdisk=None, **kwargs):
+         cls.cagent_client.remove_all_single_client_protected_disk(client)
+         if kwargs['client_os'] == 'windows':
+            LOG.info('===The single OS is "%s"  ===', kwargs['client_os'])
+            for i in range(0,numdisk):
+                disk = 'Disk ' + str(i)
+                LOG.info('===Check if the protected disk "%s" is removed.===', disk) 
+                for j in range(20):
+                    try:
+                        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+                        time.sleep(1)
+                        driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+                        time.sleep(1)
+                        if not re.search(r"^[\s\S]*//span\[contains\(\.,'" + disk + "'\)\][\s\S]*$", driver.find_element_by_css_selector("BODY").text): break
+                    except: pass
+         elif kwargs['client_os'] == 'linux':
+            LOG.info('===The single client OS is "%s"  ===', kwargs['client_os'])  
+            for i in range(97,97 + numdisk): #97=char "a"
+                disk = '/dev/sd' + chr(i)
+                LOG.info('===Check if the protected disk "%s" is removed.===', disk)  
+                for j in range(20):
+                    try:
+                        driver.find_element_by_xpath("//button[@ng-click='hardRefresh();']").click()
+                        time.sleep(1)
+                        driver.find_element_by_xpath(".//*[contains(text(), '" + client + "')]").click()
+                        time.sleep(1)
+                        if not re.search(r"^[\s\S]*//span\[contains\(\.,'" + disk + "'\)\][\s\S]*$", driver.find_element_by_css_selector("BODY").text): break
+                    except: pass
+         else:
+            pass
+
     #@classmethod
     #def clear_vdevs(cls):
     #    for vdev in cls.vdevs:
